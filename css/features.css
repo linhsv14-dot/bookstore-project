@@ -1,0 +1,417 @@
+/* =====================================================
+   css/features.css
+   Gộp CSS cho: Dark Mode + Wishlist + Reviews
+   ===================================================== */
+
+/* =====================================================
+   1. DARK MODE — CSS Variables override
+   ===================================================== */
+
+html.dark {
+  --navy:       #e2e8f0;
+  --navy2:      #cbd5e1;
+  --blue:       #60a5fa;
+  --blue-light: #1e3a5f;
+  --orange:     #fb923c;
+  --text:       #e2e8f0;
+  --text2:      #94a3b8;
+  --text3:      #64748b;
+  --bg:         #0f172a;
+  --white:      #1e293b;
+  --border:     #334155;
+  --shadow:     0 4px 24px rgba(0,0,0,.4);
+  --shadow-lg:  0 12px 48px rgba(0,0,0,.5);
+}
+
+/* Nền body & tổng thể */
+html.dark body          { background: #0f172a; color: #e2e8f0; }
+html.dark .navbar       { background: rgba(15,23,42,.97); border-bottom-color: #334155; }
+html.dark .topbar       { background: #0a1120; }
+html.dark .site-footer  { background: #0a1120; border-top-color: #334155; }
+html.dark .footer-bottom { border-color: #1e293b; }
+
+/* Cards & surfaces */
+html.dark .book-card,
+html.dark .cat-card,
+html.dark .review-card,
+html.dark .auth-box,
+html.dark .cart-sidebar,
+html.dark .modal-inner,
+html.dark .profile-card,
+html.dark .profile-main,
+html.dark .wishlist-card,
+html.dark .cart-summary-box,
+html.dark .order-card       { background: #1e293b; border-color: #334155; }
+
+html.dark .section-white    { background: #1e293b; }
+html.dark .section-bg       { background: #0f172a; }
+
+/* Inputs & forms */
+html.dark input,
+html.dark textarea,
+html.dark select {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-color: #334155;
+}
+html.dark input::placeholder,
+html.dark textarea::placeholder { color: #475569; }
+html.dark input:focus,
+html.dark textarea:focus { border-color: var(--blue); }
+
+/* Nav links */
+html.dark .nav-links a        { color: #94a3b8; }
+html.dark .nav-links a:hover,
+html.dark .nav-links a.active { color: #e2e8f0; }
+
+/* Hero */
+html.dark .hero             { background: linear-gradient(135deg, #0a1120 0%, #1e293b 100%); }
+html.dark .hero-title       { color: #f1f5f9; }
+html.dark .hero-desc        { color: #94a3b8; }
+html.dark .hero-stat        { border-color: #334155; }
+
+/* Buttons */
+html.dark .btn-ghost        { color: #e2e8f0; border-color: #475569; }
+html.dark .btn-ghost:hover  { background: #334155; }
+html.dark .btn-navy         { background: #2563eb; }
+
+/* Filter bar */
+html.dark .filter-bar       { background: #1e293b; border-color: #334155; }
+html.dark .filter-chip      { background: #0f172a; border-color: #334155; color: #94a3b8; }
+html.dark .filter-chip.active { background: #1e3a5f; color: var(--blue); border-color: var(--blue); }
+
+/* Tabs */
+html.dark .tab              { color: #94a3b8; }
+html.dark .tab.active,
+html.dark .detail-tab.active { color: #e2e8f0; border-color: var(--blue); }
+html.dark .detail-tab       { color: #64748b; border-color: transparent; }
+
+/* Breadcrumb */
+html.dark .breadcrumb       { background: #1e293b; border-color: #334155; }
+html.dark .breadcrumb a     { color: #60a5fa; }
+
+/* Page hero */
+html.dark .page-hero        { background: linear-gradient(135deg, #0a1120, #1e293b); }
+
+/* Search bar */
+html.dark .search-bar       { background: #1e293b; border-color: #334155; }
+html.dark .search-bar input { color: #e2e8f0; }
+html.dark .search-big       { background: #1e293b; border-color: #334155; }
+html.dark .search-big input { color: #e2e8f0; background: transparent; }
+
+/* Cart */
+html.dark .cart-item        { border-color: #334155; }
+html.dark .cart-total       { border-color: #334155; }
+html.dark .cart-head        { border-color: #334155; }
+html.dark .cart-foot        { border-color: #334155; background: #1e293b; }
+html.dark .checkout-btn     { background: #2563eb; }
+
+/* Promo banner */
+html.dark .promo-banner     { background: linear-gradient(135deg, #1e3a5f, #0a1120); border-color: #334155; }
+
+/* Overlay */
+html.dark .overlay          { background: rgba(0,0,0,.7); }
+
+/* Trust badges */
+html.dark .trust-badge      { background: #1e293b; border-color: #334155; }
+
+/* Profile sidebar */
+html.dark .profile-sidebar  { background: #1e293b; border-color: #334155; }
+html.dark .profile-nav a    { color: #94a3b8; }
+html.dark .profile-nav a:hover,
+html.dark .profile-nav a.active { background: #0f172a; color: var(--blue); }
+html.dark .profile-section-title { color: #e2e8f0; border-color: #334155; }
+
+/* Modal */
+html.dark .modal-overlay    { background: rgba(0,0,0,.75); }
+
+/* Toast */
+html.dark .toast            { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+
+/* Back to top */
+html.dark #backTop          { background: #1e293b; border-color: #334155; color: #e2e8f0; }
+
+/* ── Dark mode toggle button ── */
+.theme-toggle-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.theme-toggle-btn:hover { background: var(--blue-light); border-color: var(--blue); }
+
+html.dark .theme-toggle-btn { border-color: #475569; color: #e2e8f0; }
+html.dark .theme-toggle-btn:hover { background: #1e3a5f; }
+
+/* Smooth transition cho mọi element khi đổi theme */
+*,
+*::before,
+*::after {
+  transition:
+    background-color .25s ease,
+    border-color .25s ease,
+    color .2s ease,
+    box-shadow .25s ease;
+}
+/* Tắt transition cho animation đặc biệt */
+.book-card,
+.btn-primary,
+.hamburger span { transition-duration: .25s; }
+
+
+/* =====================================================
+   2. WISHLIST
+   ===================================================== */
+
+/* ── Grid wishlist trong profile ── */
+.wishlist-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 900px) { .wishlist-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .wishlist-grid { grid-template-columns: 1fr; } }
+
+/* ── Card wishlist ── */
+.wishlist-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+  position: relative;
+  transition: box-shadow .2s, transform .2s;
+}
+.wishlist-card:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.wishlist-card-img {
+  aspect-ratio: 3/4;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 900; color: #fff;
+}
+
+.wishlist-card-body { padding: .85rem; }
+
+.wishlist-card-title {
+  display: block;
+  font-weight: 600; font-size: .88rem; color: var(--navy);
+  line-height: 1.4; margin-bottom: .25rem;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.wishlist-card-title:hover { color: var(--blue); }
+
+.wishlist-card-author { font-size: .78rem; color: var(--text3); margin-bottom: .4rem; }
+
+.wishlist-card-price { display: flex; align-items: baseline; gap: .5rem; margin-bottom: .6rem; }
+.price-orig-small { font-size: .75rem; color: var(--text3); text-decoration: line-through; }
+
+.btn-add-wish {
+  width: 100%;
+  background: var(--navy);
+  color: #fff; border: none;
+  border-radius: 50px;
+  padding: .5rem; font-size: .8rem; font-weight: 600;
+  cursor: pointer; font-family: 'Poppins', sans-serif;
+  transition: background .2s;
+}
+.btn-add-wish:hover { background: var(--blue); }
+
+/* ── Nút xóa (✕) góc trên phải ── */
+.wishlist-remove-btn {
+  position: absolute; top: .6rem; right: .6rem;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  border: 1.5px solid var(--border);
+  font-size: .7rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2);
+  transition: all .2s; z-index: 2;
+}
+.wishlist-remove-btn:hover { background: #fee2e2; border-color: #dc2626; color: #dc2626; }
+
+/* ── Nút yêu thích trên book card (ngoài trang books) ── */
+.wish-btn {
+  position: absolute; top: .6rem; right: .6rem;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  border: 1.5px solid var(--border);
+  font-size: .85rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; z-index: 2;
+  opacity: 0;
+}
+.book-card:hover .wish-btn { opacity: 1; }
+.wish-btn.wished            { opacity: 1; }
+.wish-btn:hover,
+.wish-btn.wished            { border-color: var(--orange); background: #fff5f0; }
+
+/* ── Dark mode wishlist ── */
+html.dark .wishlist-remove-btn { background: rgba(30,41,59,.9); }
+html.dark .wish-btn            { background: rgba(30,41,59,.9); }
+html.dark .btn-add-wish        { background: #2563eb; }
+html.dark .btn-add-wish:hover  { background: #3b82f6; }
+
+
+/* =====================================================
+   3. REVIEWS & ĐÁNH GIÁ
+   ===================================================== */
+
+/* ── Tóm tắt rating (summary) ── */
+.rv-summary {
+  display: flex; gap: 2rem; align-items: center;
+  background: var(--blue-light);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.75rem;
+}
+@media (max-width: 600px) { .rv-summary { flex-direction: column; gap: 1.25rem; } }
+
+html.dark .rv-summary { background: #1e293b; }
+
+.rv-summary-left   { text-align: center; flex-shrink: 0; }
+.rv-avg-num        { font-size: 3rem; font-weight: 800; color: var(--navy); line-height: 1; }
+.rv-avg-stars      { font-size: 1.2rem; margin: .35rem 0 .25rem; }
+.rv-avg-count      { font-size: .8rem; color: var(--text3); }
+
+.rv-summary-bars   { flex: 1; display: flex; flex-direction: column; gap: .45rem; }
+.rv-bar-row        { display: flex; align-items: center; gap: .6rem; }
+.rv-bar-label      { font-size: .8rem; color: var(--text2); width: 22px; text-align: right; flex-shrink: 0; }
+.rv-bar-track      { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.rv-bar-fill       { height: 100%; border-radius: 4px; transition: width .6s ease; }
+.rv-bar-5          { background: #22c55e; }
+.rv-bar-4          { background: #84cc16; }
+.rv-bar-3          { background: #fbbf24; }
+.rv-bar-2          { background: #f97316; }
+.rv-bar-1          { background: #ef4444; }
+.rv-bar-pct        { font-size: .75rem; color: var(--text3); width: 30px; flex-shrink: 0; }
+
+/* ── Review card ── */
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  animation: slideUp .3s ease both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.review-head   { display: flex; align-items: center; gap: .75rem; margin-bottom: .6rem; }
+.review-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: .95rem; flex-shrink: 0;
+}
+.review-meta   { flex: 1; }
+.review-name   { display: block; font-weight: 600; font-size: .875rem; color: var(--navy); }
+.review-date   { font-size: .78rem; color: var(--text3); }
+.review-verified { font-size: .72rem; color: #16a34a; font-weight: 600;
+                   background: #dcfce7; border-radius: 50px; padding: .15rem .55rem; }
+.review-stars  { color: #fbbf24; font-size: 1rem; margin-bottom: .5rem; }
+.review-text   { font-size: .875rem; line-height: 1.75; color: var(--text2); }
+.review-actions { margin-top: .75rem; }
+.rv-helpful-btn {
+  font-size: .78rem; color: var(--text3);
+  background: none; border: 1px solid var(--border);
+  border-radius: 50px; padding: .25rem .75rem;
+  cursor: pointer; transition: all .2s; font-family: 'Poppins', sans-serif;
+}
+.rv-helpful-btn:hover { color: var(--blue); border-color: var(--blue); }
+.rv-helpful-btn[data-voted] { color: var(--blue); border-color: var(--blue); cursor: default; }
+
+.rv-empty { text-align: center; padding: 2.5rem 1rem; color: var(--text3); font-size: .9rem; }
+
+/* ── Form viết đánh giá ── */
+.add-review-form {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.5rem 1.75rem;
+  margin-top: 2rem;
+}
+html.dark .add-review-form { background: #1e293b; }
+
+.add-review-form h4 {
+  font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem;
+}
+
+/* Tên người dùng */
+.rv-name-field {
+  margin-bottom: .85rem;
+}
+.rv-name-field label {
+  display: block; font-size: .8rem; font-weight: 500; color: var(--text2); margin-bottom: .35rem;
+}
+.rv-name-field input {
+  width: 100%; max-width: 300px;
+  padding: .55rem .85rem;
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  font-size: .875rem; color: var(--text);
+  background: var(--bg);
+  outline: none; font-family: 'Poppins', sans-serif;
+  transition: border-color .2s;
+}
+.rv-name-field input:focus { border-color: var(--blue); }
+
+/* Star selector */
+.star-select { display: flex; gap: .3rem; margin-bottom: .5rem; }
+.star-btn {
+  font-size: 1.6rem; cursor: pointer;
+  background: none; border: none; padding: 0;
+  color: #e2e8f0; transition: color .15s, transform .15s;
+  line-height: 1;
+}
+.star-btn:hover,
+.star-btn.active { color: #fbbf24; transform: scale(1.15); }
+
+#starLabel {
+  display: none;
+  font-size: .78rem; font-weight: 600; color: var(--blue);
+  margin-bottom: .65rem;
+}
+
+/* Textarea */
+.add-review-form textarea {
+  width: 100%; min-height: 100px; max-height: 260px;
+  padding: .75rem 1rem;
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  font-size: .875rem; color: var(--text);
+  background: var(--bg); resize: vertical;
+  outline: none; font-family: 'Poppins', sans-serif;
+  transition: border-color .2s; margin-top: .75rem;
+}
+.add-review-form textarea:focus { border-color: var(--blue); }
+
+/* Submit button */
+.rv-submit-btn {
+  margin-top: .85rem;
+  padding: .65rem 1.75rem;
+  font-size: .875rem; font-weight: 600;
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 50px; cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  transition: background .2s, transform .15s;
+  display: inline-flex; align-items: center; gap: .4rem;
+}
+.rv-submit-btn:hover   { background: #1d4ed8; transform: translateY(-1px); }
+.rv-submit-btn:active  { transform: translateY(0); }
+
+/* ── Separator giữa summary và form ── */
+.rv-divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 1.75rem 0;
+}
