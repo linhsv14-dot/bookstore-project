@@ -15,6 +15,8 @@ let _currentFilter = 'all';
 let _currentSearch = '';
 let _currentCat    = '';
 let _currentSort   = 'default';
+let _currentPage   = 1;
+const BOOKS_PER_PAGE = 8;   /* số sách mỗi trang (chỉ áp dụng cho books.html) */
 
 /* ─────────────────────────────────────────────────────
    RENDER MỘT BOOK CARD
@@ -113,6 +115,15 @@ function renderBooks(containerId = 'bookGrid') {
   const resetBtn  = document.getElementById('filterReset');
   if (resetBtn) resetBtn.style.display = hasFilter ? 'inline-flex' : 'none';
 
+  /* Phân trang: chỉ bật trên trang có filter bar (books.html) */
+  const usePager = !!document.getElementById('filterBar');
+  const pages    = usePager ? Math.max(1, Math.ceil(list.length / BOOKS_PER_PAGE)) : 1;
+  if (_currentPage > pages) _currentPage = pages;
+  const view = usePager
+    ? list.slice((_currentPage - 1) * BOOKS_PER_PAGE, _currentPage * BOOKS_PER_PAGE)
+    : list;
+  if (usePager) renderBookPager(grid, pages);
+
   if (!list.length) {
     grid.innerHTML = `
       <div class="empty-state">
@@ -124,8 +135,43 @@ function renderBooks(containerId = 'bookGrid') {
     return;
   }
 
-  grid.innerHTML = list.map(b => renderBookCard(b)).join('');
+  grid.innerHTML = view.map(b => renderBookCard(b)).join('');
   wishlistSyncAll();
+}
+
+
+/* ─────────────────────────────────────────────────────
+   PHÂN TRANG (client-side) cho books.html
+   ───────────────────────────────────────────────────── */
+function renderBookPager(grid, pages) {
+  let box = document.getElementById('bookPager');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'bookPager';
+    box.className = 'pagination';
+    box.style.cssText = 'display:flex;gap:.4rem;justify-content:center;flex-wrap:wrap;margin-top:2rem';
+    grid.parentNode.insertBefore(box, grid.nextSibling);
+  }
+  if (pages <= 1) { box.innerHTML = ''; return; }
+
+  const btn = (label, page, disabled, active) =>
+    `<button type="button" ${disabled ? 'disabled' : `onclick="goBookPage(${page})"`}
+       style="min-width:38px;padding:.45rem .8rem;border-radius:8px;cursor:${disabled ? 'default' : 'pointer'};
+              border:1px solid ${active ? 'var(--blue)' : 'var(--border)'};
+              background:${active ? 'var(--blue)' : '#fff'};color:${active ? '#fff' : 'var(--text)'};
+              opacity:${disabled ? '.45' : '1'};font-weight:600">${label}</button>`;
+
+  let html = btn('‹', _currentPage - 1, _currentPage === 1, false);
+  for (let i = 1; i <= pages; i++) html += btn(i, i, false, i === _currentPage);
+  html += btn('›', _currentPage + 1, _currentPage === pages, false);
+  box.innerHTML = html;
+}
+
+function goBookPage(n) {
+  _currentPage = n;
+  renderBooks();
+  const bar = document.getElementById('filterBar');
+  if (bar) window.scrollTo({ top: bar.offsetTop - 80, behavior: 'smooth' });
 }
 
 /* ─────────────────────────────────────────────────────
@@ -135,6 +181,7 @@ function renderBooks(containerId = 'bookGrid') {
 /** Tab: Tất cả / Bán chạy / Sách mới / Sale */
 function switchTab(filter, btn) {
   _currentFilter = filter;
+  _currentPage = 1;
   document.querySelectorAll('#filterBar .tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
   updatePageHero();
@@ -144,6 +191,7 @@ function switchTab(filter, btn) {
 /** Select thể loại (dropdown trong filter bar) */
 function filterByCatSelect(slug) {
   _currentCat = slug;
+  _currentPage = 1;
   updatePageHero();
   renderBooks();
 }
@@ -151,6 +199,7 @@ function filterByCatSelect(slug) {
 /** Gọi từ category.html hoặc home cat-cards — nhận slug từ URL */
 function filterByCatSlug(slug) {
   _currentCat = slug;
+  _currentPage = 1;
   const select = document.getElementById('catFilter');
   if (select) select.value = slug;
   updatePageHero();
@@ -160,12 +209,14 @@ function filterByCatSlug(slug) {
 /** Search realtime từ input trong navbar */
 function filterBooks(q) {
   _currentSearch = q;
+  _currentPage = 1;
   renderBooks();
 }
 
 /** Sort */
 function sortBooks(val) {
   _currentSort = val;
+  _currentPage = 1;
   renderBooks();
 }
 
@@ -175,6 +226,7 @@ function resetAllFilters() {
   _currentCat    = '';
   _currentSearch = '';
   _currentSort   = 'default';
+  _currentPage   = 1;
 
   /* Reset UI controls */
   document.querySelectorAll('#filterBar .tab').forEach((t, i) => {
