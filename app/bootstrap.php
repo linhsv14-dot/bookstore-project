@@ -78,7 +78,7 @@ function csrf_check(): void {
 }
 
 /** Lưu ảnh upload vào assets/images, trả về tên file (hoặc null nếu không có file). */
-function save_upload(string $field, string $prefix): ?string {
+function save_upload(string $field, string $prefix, ?string $dir = null): ?string {
     if (empty($_FILES[$field]['name']) || $_FILES[$field]['error'] === UPLOAD_ERR_NO_FILE) return null;
     $f = $_FILES[$field];
     if ($f['error'] !== UPLOAD_ERR_OK || $f['size'] > 2 * 1024 * 1024) {
@@ -88,8 +88,10 @@ function save_upload(string $field, string $prefix): ?string {
     $ext  = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'][$info[2] ?? 0] ?? null;
     if (!$ext) throw new RuntimeException('Chỉ chấp nhận ảnh JPG, PNG hoặc WEBP.');
     $name = $prefix . bin2hex(random_bytes(6)) . '.' . $ext;
-    if (!move_uploaded_file($f['tmp_name'], cfg('upload_dir') . $name)) {
-        throw new RuntimeException('Không lưu được ảnh (kiểm tra quyền ghi thư mục assets/images).');
+    $dir = $dir ?? cfg('upload_dir');
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    if (!move_uploaded_file($f['tmp_name'], $dir . $name)) {
+        throw new RuntimeException('Không lưu được ảnh (kiểm tra quyền ghi thư mục upload).');
     }
     return $name;
 }
