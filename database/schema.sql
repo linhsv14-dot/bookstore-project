@@ -108,3 +108,23 @@ CREATE TABLE IF NOT EXISTS order_items (
   CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
   CONSTRAINT fk_items_book  FOREIGN KEY (book_id)  REFERENCES books(id)  ON DELETE SET NULL
 ) ENGINE=InnoDB;
+
+-- Quan hệ 1-1: mỗi user có tối đa một hồ sơ mở rộng (khóa chính = khóa ngoại).
+CREATE TABLE IF NOT EXISTS user_profiles (
+  user_id INT UNSIGNED PRIMARY KEY,
+  dob     DATE NULL,
+  address VARCHAR(255) NOT NULL DEFAULT '',
+  avatar  VARCHAR(255) NULL,
+  CONSTRAINT fk_profiles_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Quan hệ N-N: một user yêu thích nhiều sách, một sách được nhiều user yêu thích.
+CREATE TABLE IF NOT EXISTS wishlists (
+  user_id    INT UNSIGNED NOT NULL,
+  book_id    INT UNSIGNED NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, book_id),
+  KEY idx_wishlists_book (book_id),
+  CONSTRAINT fk_wish_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_wish_book FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
