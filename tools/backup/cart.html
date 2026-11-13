@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ hàng — BookStore</title>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <style>
+    .coupon-row {
+      display: flex; gap: .75rem; margin-top: 1rem;
+    }
+    .coupon-row input {
+      flex: 1;
+      padding: .65rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: .875rem;
+      font-family: 'Poppins', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .coupon-row input:focus { border-color: var(--blue); }
+    .coupon-btn {
+      padding: .65rem 1.25rem;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: .875rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      color: var(--navy);
+      transition: all .2s;
+    }
+    .coupon-btn:hover { background: var(--navy); color: #fff; border-color: var(--navy); }
+    .free-ship-notice {
+      display: flex; align-items: center; gap: .5rem;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: var(--r);
+      padding: .75rem 1rem;
+      font-size: .85rem;
+      color: #16a34a;
+      margin-top: 1rem;
+    }
+    .payment-methods-box {
+      margin-top: 1.5rem;
+    }
+    .payment-methods-box h5 {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: .75rem;
+    }
+    .pm-options { display: flex; flex-direction: column; gap: .5rem; }
+    .pm-option {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      cursor: pointer;
+      font-size: .875rem;
+      transition: border-color .2s;
+    }
+    .pm-option input[type="radio"] { accent-color: var(--blue); }
+    .pm-option:has(input:checked) { border-color: var(--blue); background: var(--blue-light); }
+    .pm-icon { font-size: 1.2rem; }
+    .continue-link {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .875rem; color: var(--blue); margin-bottom: 1.5rem;
+      transition: gap .2s;
+    }
+    .continue-link:hover { gap: .7rem; }
+    /* Checkout form modal */
+    .checkout-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 700;
+      display: none; align-items: center; justify-content: center;
+      padding: 1rem;
+    }
+    .checkout-modal.open { display: flex; }
+    .checkout-form-box {
+      background: #fff;
+      border-radius: var(--r2);
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp .3s ease;
+    }
+    .checkout-form-box h3 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--navy);
+      margin-bottom: 1.5rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .order-success {
+      text-align: center; padding: 2rem 1rem;
+    }
+    .order-success .success-icon { font-size: 4rem; margin-bottom: 1rem; }
+    .order-success h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      color: var(--navy); margin-bottom: .5rem;
+    }
+    .order-code-box {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--r); padding: .75rem 1rem;
+      font-weight: 700; font-size: 1.1rem; color: var(--blue);
+      margin: 1rem 0; letter-spacing: .1em;
+    }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span>🚚 Miễn phí giao hàng đơn từ 199k</span>
+    <span>📞 Hotline: 1800 6789</span>
+  </div>
+  <div class="topbar-right">
+    <a href="login.html">Đăng nhập</a>
+    <a href="login.html#register">Đăng ký</a>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">📚</div>
+    Book<span>Store</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="books.html">Sách</a></li>
+    <li><a href="category.html">Danh mục</a></li>
+    <li><a href="search.html">Tìm kiếm</a></li>
+  </ul>
+  <div class="nav-right">
+    <button id="darkModeToggle" style="background:none; border:none; cursor:pointer; font-size:1.2rem; margin-right:10px;">
+    🌙
+  </button>
+    <a href="profile.html" class="btn-navy" style="padding:.5rem 1rem;font-size:.85rem">👤</a>
+    <button class="cart-btn" style="background:var(--orange)" onclick="window.location.href='cart.html'">
+      🛒 Giỏ hàng
+      <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">Trang chủ</a>
+  <span class="sep">›</span>
+  <span class="current">Giỏ hàng</span>
+</div>
+
+<!-- PAGE TITLE -->
+<div style="max-width:1100px;margin:2rem auto 0;padding:0 2rem">
+  <a href="books.html" class="continue-link">← Tiếp tục mua sắm</a>
+  <h1 style="font-family:'Syne',sans-serif;font-size:1.75rem;font-weight:800;color:var(--navy)">
+    🛒 Giỏ hàng của bạn
+  </h1>
+</div>
+
+<!-- CART LAYOUT -->
+<div class="cart-page-wrap">
+  <!-- Left: Cart items -->
+  <div>
+    <div class="cart-table">
+      <div class="cart-table-head">
+        <span>Sản phẩm</span>
+        <span>Đơn giá</span>
+        <span>Số lượng</span>
+        <span>Thành tiền</span>
+        <span></span>
+      </div>
+      <!-- Rendered by cart.js -->
+      <div id="cartPageBody"></div>
+    </div>
+
+    <!-- Coupon -->
+    <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r2);padding:1.5rem;margin-top:1.25rem">
+      <p style="font-weight:600;font-size:.9rem;margin-bottom:.5rem;color:var(--navy)">🎁 Mã giảm giá</p>
+      <div class="coupon-row">
+        <input type="text" id="couponInput" placeholder="Nhập mã giảm giá...">
+        <button class="coupon-btn" onclick="applyCoupon()">Áp dụng</button>
+      </div>
+      <p style="font-size:.78rem;color:var(--text3);margin-top:.5rem">
+        Thử mã: <strong>BOOKSTORE10</strong> (giảm 10%)
+      </p>
+    </div>
+  </div>
+
+  <!-- Right: Summary -->
+  <div class="cart-summary-box">
+    <div class="cart-summary-title">📋 Tóm tắt đơn hàng</div>
+    <div class="summary-row">
+      <span class="label">Tạm tính</span>
+      <span class="val" id="summarySubtotal">0₫</span>
+    </div>
+    <div class="summary-row">
+      <span class="label">Phí vận chuyển</span>
+      <span class="val" id="summaryShipping">30.000₫</span>
+    </div>
+    <div class="summary-row" id="discountRow" style="display:none">
+      <span class="label" style="color:#16a34a">Giảm giá</span>
+      <span class="val" style="color:#16a34a" id="summaryDiscount">-0₫</span>
+    </div>
+    <hr class="summary-divider">
+    <div class="summary-total">
+      <span class="label">Tổng cộng</span>
+      <span class="val" id="summaryTotal">0₫</span>
+    </div>
+
+    <!-- Free shipping notice -->
+    <div class="free-ship-notice" id="freeShipNotice" style="display:none">
+      🎉 Bạn được miễn phí vận chuyển!
+    </div>
+
+    <!-- Payment methods -->
+    <div class="payment-methods-box">
+      <h5>Phương thức thanh toán</h5>
+      <div class="pm-options">
+        <label class="pm-option">
+          <input type="radio" name="pm" value="cod" checked>
+          <span class="pm-icon">🏠</span>
+          <span>Thanh toán khi nhận hàng (COD)</span>
+        </label>
+        <label class="pm-option">
+          <input type="radio" name="pm" value="momo">
+          <span class="pm-icon">📱</span>
+          <span>Ví MoMo</span>
+        </label>
+        <label class="pm-option">
+          <input type="radio" name="pm" value="bank">
+          <span class="pm-icon">🏦</span>
+          <span>Chuyển khoản ngân hàng</span>
+        </label>
+      </div>
+    </div>
+
+    <button class="checkout-btn" style="margin-top:1.5rem" onclick="openCheckoutForm()">
+      Đặt hàng ngay →
+    </button>
+    <p style="text-align:center;font-size:.75rem;color:var(--text3);margin-top:.75rem">
+      🔒 Thanh toán được bảo mật 256-bit SSL
+    </p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer" style="margin-top:4rem">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-f">📚 Book<span>Store</span></div>
+        <p>Nền tảng mua sách trực tuyến uy tín hàng đầu Việt Nam.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">f</a><a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">tw</a><a href="#" class="social-btn">yt</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Sản phẩm</h4><ul>
+        <li><a href="books.html?filter=new">Sách mới</a></li>
+        <li><a href="books.html?filter=bestseller">Bán chạy</a></li>
+        <li><a href="books.html?filter=sale">Khuyến mãi</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Hỗ trợ</h4><ul>
+        <li><a href="#">Hướng dẫn mua</a></li>
+        <li><a href="#">Đổi trả</a></li>
+        <li><a href="#">Liên hệ</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Công ty</h4><ul>
+        <li><a href="#">Giới thiệu</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 BookStore Premium. All rights reserved.</p>
+      <div class="payment-methods">
+        <span class="payment-icon">VISA</span><span class="payment-icon">MOMO</span><span class="payment-icon">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button id="backTop">↑</button>
+<div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
+
+<!-- CHECKOUT FORM MODAL -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-form-box" id="checkoutFormBox">
+    <div id="checkoutFormContent">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem">
+        <h3 style="margin:0">📦 Thông tin giao hàng</h3>
+        <button onclick="closeCheckoutForm()"
+                style="background:none;border:none;font-size:1.25rem;cursor:pointer;color:var(--text2)">✕</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ và tên *</label>
+          <input type="text" id="orderName" placeholder="Nguyễn Văn A">
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại *</label>
+          <input type="tel" id="orderPhone" placeholder="0901234567">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="orderEmail" placeholder="example@email.com">
+      </div>
+      <div class="form-group">
+        <label>Địa chỉ giao hàng *</label>
+        <input type="text" id="orderAddress" placeholder="Số nhà, đường, phường/xã...">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tỉnh/Thành phố</label>
+          <input type="text" id="orderCity" placeholder="TP. Hồ Chí Minh">
+        </div>
+        <div class="form-group">
+          <label>Quận/Huyện</label>
+          <input type="text" id="orderDistrict" placeholder="Quận 1">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ghi chú</label>
+        <input type="text" id="orderNote" placeholder="Ghi chú cho đơn hàng (không bắt buộc)">
+      </div>
+      <button class="checkout-btn" onclick="placeOrder()" style="margin-top:.5rem">
+        ✅ Xác nhận đặt hàng
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/darkmode.js"></script>
+<script>
+  let _discount = 0;
+
+  /* Coupon */
+  function applyCoupon() {
+    const code = document.getElementById('couponInput').value.trim().toUpperCase();
+    if (code === 'BOOKSTORE10') {
+      _discount = 0.1;
+      updatePageSummary();
+      showToast('🎉 Áp dụng mã thành công! Giảm 10%');
+      document.getElementById('discountRow').style.display = 'flex';
+    } else if (code) {
+      showToast('❌ Mã giảm giá không hợp lệ');
+    }
+  }
+
+  /* Re-calculate summary with discount */
+  function updatePageSummary() {
+    const sub      = cartTotalPrice();
+    const shipping = sub >= 199000 ? 0 : 30000;
+    const disc     = Math.round(sub * _discount);
+    const total    = sub + shipping - disc;
+
+    const el = id => document.getElementById(id);
+    if (el('summarySubtotal')) el('summarySubtotal').textContent = formatPrice(sub);
+    if (el('summaryShipping')) el('summaryShipping').textContent = shipping === 0 ? 'Miễn phí' : formatPrice(shipping);
+    if (el('summaryDiscount')) el('summaryDiscount').textContent = '-' + formatPrice(disc);
+    if (el('summaryTotal'))    el('summaryTotal').textContent    = formatPrice(total);
+    if (el('freeShipNotice'))  el('freeShipNotice').style.display = shipping === 0 ? 'flex' : 'none';
+  }
+
+  /* Override cart.js updateSummary for this page */
+  const _origCartRenderPage = cartRenderPage;
+
+  /* Checkout form */
+  function openCheckoutForm() {
+    if (!cartTotalQty()) { showToast('⚠ Giỏ hàng trống!'); return; }
+    document.getElementById('checkoutModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCheckoutForm() {
+    document.getElementById('checkoutModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function placeOrder() {
+    const name    = document.getElementById('orderName').value.trim();
+    const phone   = document.getElementById('orderPhone').value.trim();
+    const email   = document.getElementById('orderEmail').value.trim();
+    const address = document.getElementById('orderAddress').value.trim();
+
+    if (!name || !phone || !email || !address) {
+      showToast('⚠ Vui lòng điền đầy đủ thông tin!');
+      return;
+    }
+
+    const orderCode = 'BS' + Date.now().toString().slice(-8).toUpperCase();
+    const pm = document.querySelector('input[name="pm"]:checked')?.value || 'cod';
+    const pmLabel = { cod: 'COD', momo: 'MoMo', bank: 'Chuyển khoản' }[pm];
+
+    /* Show success */
+    document.getElementById('checkoutFormContent').innerHTML = `
+      <div class="order-success">
+        <div class="success-icon">🎉</div>
+        <h3>Đặt hàng thành công!</h3>
+        <p style="color:var(--text2);font-size:.9rem">Cảm ơn <strong>${name}</strong> đã mua hàng tại BookStore!</p>
+        <div class="order-code-box">${orderCode}</div>
+        <p style="font-size:.85rem;color:var(--text3);margin-bottom:.5rem">Mã đơn hàng của bạn</p>
+        <div style="background:var(--bg);border-radius:var(--r);padding:1rem;text-align:left;margin:1rem 0;font-size:.875rem">
+          <p style="margin-bottom:.4rem">📦 Địa chỉ: <strong>${address}</strong></p>
+          <p style="margin-bottom:.4rem">📞 Điện thoại: <strong>${phone}</strong></p>
+          <p>💳 Thanh toán: <strong>${pmLabel}</strong></p>
+        </div>
+        <p style="font-size:.8rem;color:var(--text3)">Chúng tôi sẽ liên hệ xác nhận qua email <strong>${email}</strong></p>
+        <button class="btn-primary" style="margin-top:1.5rem" onclick="orderDone()">
+          Về trang chủ
+        </button>
+      </div>`;
+
+    cartClear();
+  }
+
+  function orderDone() {
+    closeCheckoutForm();
+    window.location.href = 'index.html';
+  }
+
+  /* Close modal on overlay click */
+  document.getElementById('checkoutModal')?.addEventListener('click', e => {
+    if (e.target === document.getElementById('checkoutModal')) closeCheckoutForm();
+  });
+
+  /* On load: update summary */
+  document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(updatePageSummary, 100);
+  });
+</script>
+</body>
+</html>
