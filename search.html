@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tìm kiếm sách — BookStore</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/features.css">
+  <style>
+
+.rv-summary { display: flex; gap: 1.5rem; align-items: center; background: #fff; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 8px; }
+.rv-bar-row { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; margin-bottom: 3px; }
+.rv-bar-track { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.rv-bar-fill { height: 100%; background: #10b981; }
+.rv-bar-label { width: 20px; }
+    /* Thêm vào thẻ <style> hiện có */
+.rv-summary-left { text-align: center; }
+.rv-avg-num { font-size: 2.5rem; font-weight: 800; color: var(--navy); }
+.rv-summary-bars { flex: 1; min-width: 250px; }
+.rv-bar-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 4px; }
+.rv-bar-label { width: 30px; font-weight: 600; }
+.rv-bar-track { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+.rv-bar-fill { height: 100%; background: #10b981; }
+.rv-bar-pct { width: 35px; text-align: right; font-size: 0.8rem; color: var(--text2); }
+    /* Tùy chỉnh font chữ cho phần review */
+.rv-summary, .modal-reviews-section {
+    font-family: 'Poppins', sans-serif !important;
+}
+    .search-result-info {
+      max-width: 1100px; margin: 0 auto;
+      padding: 1.5rem 2rem .5rem;
+      font-size: .9rem; color: var(--text2);
+    }
+    .search-result-info strong { color: var(--navy); font-weight: 700; }
+    .search-result-info span.keyword {
+      background: var(--blue-light);
+      color: var(--blue);
+      padding: .1rem .5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .search-no-result {
+      text-align: center;
+      padding: 5rem 2rem;
+      color: var(--text3);
+    }
+    .search-no-result .icon { font-size: 4rem; margin-bottom: 1.5rem; }
+    .search-no-result h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.3rem;
+      color: var(--navy);
+      margin-bottom: .75rem;
+    }
+    .search-no-result p { font-size: .9rem; margin-bottom: 1.5rem; }
+    .suggest-wrap { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-top: 1rem; }
+    .suggest-chip {
+      background: var(--blue-light);
+      color: var(--blue);
+      border: 1px solid rgba(37,99,235,.15);
+      padding: .35rem .85rem;
+      border-radius: 50px;
+      font-size: .85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .suggest-chip:hover { background: var(--blue); color: #fff; }
+    .star-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #cbd5e1;
+  cursor: pointer;
+  padding: 0 .1rem;
+  transition: transform 0.1s, color 0.1s;
+}
+
+.star-btn.active {
+  color: #fbbf24;
+}
+
+.star-btn:hover {
+  transform: scale(1.15);
+}
+
+.rv-summary {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: var(--r);
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+}
+
+.modal-reviews-section {
+  border-top: 1px dashed var(--border);
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+}
+
+#reviewsList::-webkit-scrollbar {
+  width: 6px;
+}
+
+#reviewsList::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 4px;
+}
+
+    
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <span>🚚 Miễn phí giao hàng đơn từ 199k</span>
+    <span>📞 Hotline: 1800 6789</span>
+  </div>
+  <div class="topbar-right">
+    <a href="login.html">Đăng nhập</a>
+    <a href="login.html#register">Đăng ký</a>
+  </div>
+</div>
+
+<nav class="navbar">
+  <a class="logo" href="index.html">
+    <div class="logo-icon">📚</div>
+    Book<span>Store</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Trang chủ</a></li>
+    <li><a href="books.html">Sách</a></li>
+    <li><a href="category.html">Danh mục</a></li>
+    <li><a href="search.html" class="active">Tìm kiếm</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="profile.html" class="btn-navy" style="padding:.5rem 1rem;font-size:.85rem">👤</a>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Giỏ hàng
+      <span class="cart-badge" id="cartBadge" style="display:none">0</span>
+    </button>
+    <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<section class="search-hero">
+  <h1>Tìm kiếm sách</h1>
+  <div class="search-big">
+    <span style="font-size:1.1rem">🔍</span>
+    <input type="text" id="searchMain" placeholder="Nhập tên sách, tác giả, thể loại..."
+           oninput="doSearch(this.value)"
+           onkeydown="if(event.key==='Enter')doSearch(this.value)">
+    <button onclick="doSearch(document.getElementById('searchMain').value)">Tìm kiếm</button>
+  </div>
+  <div class="search-tags">
+    <span class="search-tag" onclick="quickSearch('Kỹ năng sống')">🧠 Kỹ năng sống</span>
+    <span class="search-tag" onclick="quickSearch('Kinh tế')">📈 Kinh tế</span>
+    <span class="search-tag" onclick="quickSearch('Công nghệ')">💻 Công nghệ</span>
+    <span class="search-tag" onclick="quickSearch('Tiểu thuyết')">📖 Tiểu thuyết</span>
+    <span class="search-tag" onclick="quickSearch('Dale Carnegie')">Dale Carnegie</span>
+    <span class="search-tag" onclick="quickSearch('Paulo Coelho')">Paulo Coelho</span>
+  </div>
+</section>
+
+<div class="search-result-info" id="resultInfo" style="display:none"></div>
+
+<section class="section section-bg" id="resultsSection">
+  <div class="section-inner">
+    <div class="section-header" id="defaultHeader">
+      <div>
+        <div class="section-title">Tất cả sách</div>
+        <div class="section-subtitle">Hãy nhập từ khóa để tìm kiếm</div>
+      </div>
+      <span class="filter-count" id="filterCount"></span>
+    </div>
+    <div class="book-grid" id="bookGrid"></div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-f">📚 Book<span>Store</span></div>
+        <p>Nền tảng mua sách trực tuyến uy tín hàng đầu Việt Nam.</p>
+        <div class="footer-socials">
+          <a href="#" class="social-btn">f</a><a href="#" class="social-btn">in</a>
+          <a href="#" class="social-btn">tw</a><a href="#" class="social-btn">yt</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Sản phẩm</h4><ul>
+        <li><a href="books.html?filter=sale">Khuyến mãi</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Hỗ trợ</h4><ul>
+        <li><a href="#">Hướng dẫn mua</a></li>
+        <li><a href="#">Đổi trả</a></li>
+        <li><a href="#">Liên hệ</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Công ty</h4><ul>
+        <li><a href="#">Giới thiệu</a></li>
+        <li><a href="#">Blog</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 BookStore Premium. All rights reserved.</p>
+      <div class="payment-methods">
+        <span class="payment-icon">VISA</span><span class="payment-icon">MOMO</span><span class="payment-icon">COD</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button id="backTop">↑</button>
+<div class="toast" id="toast"><span class="toast-icon">✓</span><span id="toastMsg"></span></div>
+<div class="overlay" id="overlay"></div>
+
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-head"><h3>🛒 Giỏ hàng</h3><button class="close-btn" onclick="closeCart()">✕</button></div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-foot">
+    <div class="cart-total"><span class="tlabel">Tổng cộng</span><span class="amount" id="cartTotal">0₫</span></div>
+    <button class="checkout-btn" onclick="window.location.href='cart.html'">Xem giỏ hàng →</button>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal-box" style="max-width: 750px; width: 90%;">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-inner" style="max-height: 85vh; overflow-y: auto; padding-right: .5rem;">
+      <div class="modal-img" id="modalImg">📚</div>
+      
+      <div>
+        <div class="modal-title"  id="modalTitle">Đang tải...</div>
+        <div class="modal-author" id="modalAuthor"></div>
+        <div class="modal-price"  id="modalPrice">0₫</div>
+        <div class="modal-desc"   id="modalDesc"></div>
+        <button class="modal-add" id="modalAddBtn">🛒 Thêm vào giỏ hàng</button>
+
+        <div class="modal-reviews-section">
+          <h4 style="font-family: 'Poppins', sans-serif; color: var(--navy); margin-bottom: .75rem; font-size: 1.1rem;">💬 Phản hồi từ độc giả</h4>
+          
+          <div id="reviewSummary" class="rv-summary"></div>
+          
+          <div id="reviewsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 1.25rem; padding-right: .5rem;"></div>
+
+          <form class="review-quick-form" onsubmit="event.preventDefault();" style="background: var(--bg); padding: 1rem; border-radius: var(--r); border: 1px solid var(--border);">
+            <h5 style="margin-bottom: .5rem; font-weight: 600; color: var(--navy);">✍️ Viết nhận xét của bạn</h5>
+            
+            <div style="display: flex; gap: .75rem; align-items: center; margin-bottom: .75rem; flex-wrap: wrap;">
+              <div id="starSelect" style="display: flex; gap: .2rem;"></div>
+              <span id="starLabel" style="font-size: .85rem; font-weight: 600; color: #eab308; display: none;"></span>
+            </div>
+            
+            <div style="margin-bottom: .5rem;">
+              <input type="text" id="reviewName" placeholder="Tên của bạn..." style="width: 100%; padding: .5rem; font-size: .85rem; border: 1px solid var(--border); border-radius: var(--r); outline: none;">
+            </div>
+            
+            <div style="display: flex; gap: .5rem;">
+              <input type="text" id="reviewText" placeholder="Nhập cảm nhận (tối thiểu 10 ký tự)..." style="flex: 1; padding: .5rem; border: 1px solid var(--border); border-radius: var(--r); font-size: .85rem; outline: none;">
+              <button id="modalReviewSubmitBtn" type="button" style="background: var(--blue); color: #fff; border: none; padding: 0 1.25rem; border-radius: var(--r); font-size: .85rem; cursor: pointer; font-weight: 600;">Gửi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="api/data.php"></script>
+<script src="js/reviews.js"></script> 
+<script src="js/app.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/books.js"></script>
+<script src="js/darkmode.js"></script>
+<script>
+  function doSearch(q) {
+    q = q.trim();
+    const info   = document.getElementById('resultInfo');
+    const defHdr = document.getElementById('defaultHeader');
+
+    /* Update URL silently */
+    history.replaceState(null, '', q ? `?q=${encodeURIComponent(q)}` : '?');
+
+    if (q) {
+      /* Show result info */
+      info.style.display = 'block';
+      defHdr.style.display = 'none';
+
+      const results = BOOKS.filter(b =>
+        b.title.toLowerCase().includes(q.toLowerCase()) ||
+        b.author.toLowerCase().includes(q.toLowerCase()) ||
+        b.cat.toLowerCase().includes(q.toLowerCase())
+      );
+
+      info.innerHTML = `Tìm thấy <strong>${results.length}</strong> kết quả cho
+        <span class="keyword">"${q}"</span>`;
+
+      /* Render with custom list */
+      const grid = document.getElementById('bookGrid');
+      if (!results.length) {
+        grid.innerHTML = `
+          <div class="search-no-result" style="grid-column:1/-1">
+            <div class="icon">🔍</div>
+            <h3>Không tìm thấy kết quả</h3>
+            <p>Không có sách nào phù hợp với "<strong>${q}</strong>"</p>
+            <p>Thử tìm với từ khóa khác:</p>
+            <div class="suggest-wrap">
+              ${['Kỹ năng sống','Kinh tế','Tiểu thuyết','Công nghệ'].map(s =>
+                `<span class="suggest-chip" onclick="quickSearch('${s}')">${s}</span>`).join('')}
+            </div>
+          </div>`;
+      } else {
+  grid.innerHTML = results.map(b => renderBookCard(b)).join('');
+  wishlistSyncAll();
+}
+      const fc = document.getElementById('filterCount');
+      if (fc) fc.textContent = results.length ? `${results.length} kết quả` : '';
+    } else {
+      /* Reset to show all */
+      info.style.display = 'none';
+      defHdr.style.display = 'flex';
+      window._currentSearch = '';
+      renderBooks('bookGrid');
+    }
+  }
+
+  function quickSearch(kw) {
+    document.getElementById('searchMain').value = kw;
+    doSearch(kw);
+    window.scrollTo({ top: document.getElementById('resultsSection').offsetTop - 80, behavior: 'smooth' });
+  }
+
+  /* Read URL param on load */
+  document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q') || '';
+    if (q) {
+      document.getElementById('searchMain').value = q;
+      doSearch(q);
+    }
+  });
+</script>
+<script src="js/api.js"></script>
+</body>
+</html>
